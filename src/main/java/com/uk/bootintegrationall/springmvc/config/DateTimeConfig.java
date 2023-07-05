@@ -12,7 +12,8 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupp
 import java.time.format.DateTimeFormatter;
 
 /**
- * @Description TODO
+ * @Description 这里的弊端是, 无法覆盖到GlobalExceptionHandler中的返回值格式化处理.
+ * 通过配置的方式可以解决该问题.
  */
 //@Configuration
 public class DateTimeConfig extends WebMvcConfigurationSupport {

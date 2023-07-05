@@ -25,7 +25,7 @@ pom.xml
         return "car";
     }
 ```
-2. 通过DefaultFormattingConversionService注册日期和时间两个格式化工具类, 全局级别的.
+2. 通过DefaultFormattingConversionService注册日期和时间两个格式化工具类, 全局级别的.(无法覆盖到ExceptionHandler中的返回值)
 ```java
 @Configuration
 public class DateTimeConfig extends WebMvcConfigurationSupport {
@@ -57,3 +57,15 @@ spring.mvc.format.date=yyyy-MM-dd
 spring.mvc.format.date-time=yyyy-MM-dd HH:mm:ss
 spring.mvc.format.time=HH:mm:ss
 ```
+### 3.2 返回值类型的统一封装
+1. 定义统一返回值类型
+参考类: 
+```java
+com.uk.bootintegrationall.springmvc.config.CResult
+```
+2. 封装返回值
+```java
+com.uk.bootintegrationall.springmvc.config.FastMvcResponseBodyAwareAdvice
+```
+### 3.3 全局异常处理
+1. 主配置类: com.uk.bootintegrationall.springmvc.config.GlobalExceptionHandler

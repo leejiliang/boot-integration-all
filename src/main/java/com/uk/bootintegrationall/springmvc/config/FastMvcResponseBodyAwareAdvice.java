@@ -20,9 +20,8 @@ import java.util.WeakHashMap;
  * @Description TODO
  */
 @ControllerAdvice
-public class FastMvcResponseBodyAwareAdvice implements ResponseBodyAdvice<Object>, EnvironmentAware {
+public class FastMvcResponseBodyAwareAdvice implements ResponseBodyAdvice<Object> {
 
-    private Environment environment;
     private final Map<Method, Boolean> supportsCache = new WeakHashMap<>();
     private final String [] basePackages;
     private ObjectMapper objectMapper ;
@@ -69,10 +68,5 @@ public class FastMvcResponseBodyAwareAdvice implements ResponseBodyAdvice<Object
             }
         }
         return result;
-    }
-
-    @Override
-    public void setEnvironment(Environment environment) {
-        this.environment = environment;
     }
 }
