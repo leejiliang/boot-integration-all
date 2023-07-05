@@ -21,7 +21,6 @@ public class CResult<T> implements Serializable {
      * 失败
      */
     public static final String FAIL = "0";
-    private static final long serialVersionUID = -212122772006061476L;
 
     /**
      * 状态码
@@ -69,6 +68,9 @@ public class CResult<T> implements Serializable {
         this.data = t;
     }
 
+    public void setData(T data) {
+        this.data = data;
+    }
 
     /**
      * 返回成功
@@ -141,6 +143,50 @@ public class CResult<T> implements Serializable {
      * @return
      */
     public static CResult ofFailByMethodNotAllowed(String url) {
-        return  new CResult("405", "当前资源请求方式错误，请稍后再试", HttpStatus.METHOD_NOT_ALLOWED.getReasonPhrase() + " - 目标资源资源不存在：" + url);
+        return new CResult("405", "当前资源请求方式错误，请稍后再试", HttpStatus.METHOD_NOT_ALLOWED.getReasonPhrase() + " - 目标资源资源不存在：" + url);
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    public String getClientMessage() {
+        return clientMessage;
+    }
+
+    public void setClientMessage(String clientMessage) {
+        this.clientMessage = clientMessage;
+    }
+
+    public String getServerMessage() {
+        return serverMessage;
+    }
+
+    public void setServerMessage(String serverMessage) {
+        this.serverMessage = serverMessage;
+    }
+
+    public T getData() {
+        return data;
+    }
+
+    public Map getDataMap() {
+        return dataMap;
+    }
+
+    public void setDataMap(Map dataMap) {
+        this.dataMap = dataMap;
+    }
+
+    public LocalDateTime getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(LocalDateTime timestamp) {
+        this.timestamp = timestamp;
     }
 }

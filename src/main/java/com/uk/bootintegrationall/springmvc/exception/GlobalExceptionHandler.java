@@ -9,7 +9,9 @@ import org.springframework.validation.BindException;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.NoHandlerFoundException;
 
@@ -22,6 +24,7 @@ import java.util.List;
 /**
  * @Description TODO
  */
+@ControllerAdvice
 public class GlobalExceptionHandler {
     private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
     /**
@@ -47,7 +50,8 @@ public class GlobalExceptionHandler {
      * @param exception
      * @return
      */
-    @ExceptionHandler(BasicException.class)
+    @ExceptionHandler(value = {BasicException.class, ServerException.class})
+    @ResponseBody
     public CResult<BasicException> clientExceptionDispose(BasicException exception){
         // 设置响应码
         response.setStatus(exception.getStatus());
