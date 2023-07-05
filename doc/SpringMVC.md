@@ -16,7 +16,7 @@ pom.xml
 ```
 ## 3. 常用配置
 ### 3.1 入参类型转换
-- 日期类型转换
+#### 3.1.1 日期类型转换
 1. 通过@DateTimeFormat(pattern = "yyyy-MM-dd")解决, 方法级别的.
 ```java
     @GetMapping("/getCar")
