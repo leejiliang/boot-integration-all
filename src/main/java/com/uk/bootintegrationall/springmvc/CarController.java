@@ -1,5 +1,6 @@
 package com.uk.bootintegrationall.springmvc;
 
+import com.uk.bootintegrationall.springmvc.config.UserInfo;
 import com.uk.bootintegrationall.springmvc.exception.ServerException;
 import com.uk.bootintegrationall.springmvc.exception.ServerExceptionEnum;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -36,5 +37,10 @@ public class CarController {
             throw new ServerException(ServerExceptionEnum.SERVER_ERROR);
         }
         return "car";
+    }
+
+    @GetMapping("/getCar4")
+    public String getCar4(UserInfo userInfo) {
+        return userInfo.toString();
     }
 }

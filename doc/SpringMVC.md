@@ -68,4 +68,11 @@ com.uk.bootintegrationall.springmvc.config.CResult
 com.uk.bootintegrationall.springmvc.config.FastMvcResponseBodyAwareAdvice
 ```
 ### 3.3 全局异常处理
-1. 主配置类: com.uk.bootintegrationall.springmvc.config.GlobalExceptionHandler
+1. 主配置类
+    `com.uk.bootintegrationall.springmvc.config.GlobalExceptionHandler`
+### 3.4 自定义参数注入
+经典场景, 例如: 获取当前登录用户信息, 通过注解的方式, 注入到Controller中.
+1. 定义用户信息解析器
+   `com.uk.bootintegrationall.springmvc.config.UserInfoArgumentResolver`
+2. 注册用户信息解析器
+   `com.uk.bootintegrationall.springmvc.config.FastWebMvcConfigurer`
