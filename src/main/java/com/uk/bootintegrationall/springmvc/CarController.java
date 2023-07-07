@@ -3,13 +3,12 @@ package com.uk.bootintegrationall.springmvc;
 import com.uk.bootintegrationall.springmvc.config.UserInfo;
 import com.uk.bootintegrationall.springmvc.exception.ServerException;
 import com.uk.bootintegrationall.springmvc.exception.ServerExceptionEnum;
+import com.uk.bootintegrationall.springmvc.util.CarReq;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import java.time.LocalDate;
@@ -51,5 +50,10 @@ public class CarController {
     @GetMapping("/getCar5")
     public String getCar5(@RequestParam @Min(1970) @Max(value = 9999, message = "年份信息不合法") Integer year) {
         return year.toString();
+    }
+
+    @PostMapping("/getCar6")
+    public String getCar5(@RequestBody @Valid CarReq carReq) {
+        return carReq.toString();
     }
 }

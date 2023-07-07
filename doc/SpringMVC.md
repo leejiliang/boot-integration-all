@@ -90,7 +90,7 @@ To use the Java Validation API, we have to add a JSR 303 implementation, such as
     <version>6.0.10.Final</version>
 </dependency>
 ```
-使用校验逻辑: 
+1. 使用内置校验逻辑: 
 ```java
 @RestController
 @RequestMapping("/car")
@@ -100,8 +100,24 @@ public class CarController {
     public String getCar5(@RequestParam @Min(1970) @Max(value = 9999, message = "年份信息不合法") Integer year) {
         return year.toString();
     }
+    
+   @PostMapping("/getCar6")
+   public String getCar5(@RequestBody @Valid CarReq carReq) {
+      return carReq.toString();
+   }
+}
+
+public class CarReq {
+    private String carName;
+    private String carColor;
+    @Max(value = 9999999, message = "价格不能超过9999999")
+    private BigDecimal carPrice;
 }
 ```
+2. 自定义参数校验逻辑
+
+- 定义校验注解: `com.uk.bootintegrationall.springmvc.annotation.CarName`
+- 自定义校验逻辑: `com.uk.bootintegrationall.springmvc.validator.CarNameValidator`
 ### 3.6 拦截器
 ### 3.7 过滤器
 ### 3.8 自定义404页面
