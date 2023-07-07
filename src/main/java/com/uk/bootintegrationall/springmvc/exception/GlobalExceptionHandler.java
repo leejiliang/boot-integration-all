@@ -69,6 +69,7 @@ public class GlobalExceptionHandler {
      * @return
      */
     @ExceptionHandler(Throwable.class)
+    @ResponseBody
     public CResult<Throwable> otherErrorDispose(Throwable e){
         BasicException serverException = new ServerException(ServerExceptionEnum.SERVER_ERROR);
         this.response.setStatus(serverException.status);
@@ -97,6 +98,7 @@ public class GlobalExceptionHandler {
         HttpMessageNotReadableException.class
     })
     @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseBody
     public CResult<Throwable> ValidExceptionDispose(Exception e){
         List<String> messages = new ArrayList<>();
         if (e instanceof BindException) {
@@ -132,6 +134,7 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(NoHandlerFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ResponseBody
     public CResult notFound() {
         return CResult.ofFailByNotFound(request.getRequestURL().toString());
     }
@@ -145,6 +148,7 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
     @ResponseStatus(HttpStatus.METHOD_NOT_ALLOWED)
+    @ResponseBody
     public CResult methodNotAllowed() {
         return CResult.ofFailByMethodNotAllowed(request.getRequestURL().toString());
     }
