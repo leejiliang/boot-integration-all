@@ -119,6 +119,25 @@ public class CarReq {
 - 定义校验注解: `com.uk.bootintegrationall.springmvc.annotation.CarName`
 - 自定义校验逻辑: `com.uk.bootintegrationall.springmvc.validator.CarNameValidator`
 ### 3.6 拦截器
+HandlerInterceptor与WebRequestInterceptor
+WebRequestInterceptor间接实现了HandlerInterceptor，只是他们之间使用WebRequestHandlerInterceptorAdapter适配器类联系。
+不同点
+WebRequestInterceptor的入参WebRequest是包装了HttpServletRequest 和HttpServletResponse的，通过WebRequest获取Request中的信息更简便。
+2.WebRequestInterceptor的preHandle是没有返回值的，说明该方法中的逻辑并不影响后续的方法执行，所以这个接口实现就是为了获取Request中的信息，或者预设一些参数供后续流程使用。
+3.HandlerInterceptor的功能更强大也更基础，可以在preHandle方法中就直接拒绝请求进入controller方法。
+使用场景
+这个在上条已经说了，如果想更方便获取HttpServletRequest的信息就使用WebRequestInterceptor，当然这些HandlerInterceptor都能做，只不过要多写点代码
+
+如何配置
+配置类继承WebMvcConfigurationSupport或WebMvcConfigurerAdapter类，重写addInterceptors，InterceptorRegistry实例就可以直接添加。
+顺便说下继承WebMvcConfigurationSupport或WebMvcConfigurerAdapter的区别，继承WebMvcConfigurationSupport不需要声明@EnableWebMvc注解，继承WebMvcConfigurerAdapter需要
+4. 实践
+4.1 定义拦截器
+`com.uk.bootintegrationall.springmvc.interceptor.AuthInterceptor`
+`com.uk.bootintegrationall.springmvc.interceptor.LoggerInterceptor`
+5. 注册拦截器
+`com.uk.bootintegrationall.springmvc.config.FastWebMvcConfigurer#addInterceptors`
+
 ### 3.7 过滤器
 ### 3.8 自定义404页面
 ### 3.9 自定义静态资源目录
