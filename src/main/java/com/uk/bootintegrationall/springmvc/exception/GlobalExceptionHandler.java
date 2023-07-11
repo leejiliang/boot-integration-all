@@ -139,6 +139,12 @@ public class GlobalExceptionHandler {
         return CResult.ofFailByNotFound(request.getRequestURL().toString());
     }
 
+//    @ExceptionHandler(NoHandlerFoundException.class)
+//    @ResponseStatus(HttpStatus.NOT_FOUND)
+//    public String notFoundPage() {
+//        return "404";
+//    }
+
     /**
      * 405 Method Not Allowed
      * 请求行中指定的请求方法不能被用于请求相应的资源。该响应必须返回一个Allow 头信息用以表示出当前资源能够接受的请求方法的列表。

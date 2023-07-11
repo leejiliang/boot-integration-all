@@ -263,6 +263,16 @@ Spring MVC 中的 Filter 配置
    - 配置filter
       启动类添加注解: @ServletComponentScan
 ### 3.8 自定义404页面
+1. 关闭spring提供的whitelabel错误页面
+   ```properties
+   server.error.whitelabel.enabled=false
+   ```
+2. 通过spring-boot-starter-thymeleaf发现自定义404页面
+   - 在resource/templates目录下创建error目录
+   - 在error目录下创建404.html
+   - 页面内容自定义
+   - 测试访问: http://localhost:8080/abc
+
 ### 3.9 自定义静态资源目录
 ### 3.10 自定义静态资源映射
 ### 3.11 跨域配置
