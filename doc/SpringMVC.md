@@ -274,5 +274,15 @@ Spring MVC 中的 Filter 配置
    - 测试访问: http://localhost:8080/abc
 
 ### 3.9 自定义静态资源目录
+SpringBoot通过ResourceHttpRequestHandler 类来配置静态资源目录
+默认的静态资源目录: /static, /public, /resources, and /META-INF/resources
+将静态资源放入以上目录下即可直接访问
+以上都是默认的静态资源目录, 如果想自定义静态资源目录, 可以通过配置文件来实现
+```properties
+## 所有的静态资源都必须添加前缀/content/xxx.html
+spring.mvc.static-path-pattern=/content/**
+## 指定新的静态资源目录, 默认的静态资源目录将失效
+spring.web.resources.static-locations=classpath:/files/,classpath:/static-files
+```
 ### 3.10 自定义静态资源映射
 ### 3.11 跨域配置
