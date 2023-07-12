@@ -285,5 +285,49 @@ spring.mvc.static-path-pattern=/content/**
 ## 指定新的静态资源目录, 默认的静态资源目录将失效
 spring.web.resources.static-locations=classpath:/files/,classpath:/static-files
 ```
-### 3.10 自定义静态资源映射
-### 3.11 跨域配置
+### 3.10 跨域配置
+[CORS With Spring](https://www.baeldung.com/spring-cors)
+
+基于安全的考虑，W3C规范规定浏览器禁止访问不同域(origin)的资源，目前绝大部分浏览器遵循这一规范，从而衍生出了跨域资源共享 (CORS)问题，相比于IFRAME或JSONP，CORS更全面并且更安全，Spring Mvc为我们提供了一套多粒度的CORS解决方案。
+
+CORS的工作原理是添加新的HTTP headers来让服务器描述哪些源的请求可以访问该资源，对于可能对服务器造成不好影响的请求，规范规定浏览器需要先发送“预检”请求（也就是OPTION请求），在预检请求通过后再发送实际的请求，服务器还可以通知客户端是否应该随请求发送“凭据”（例如 Cookie 和 HTTP 身份验证）
+
+复现跨域问题, 启动项目在两个端口, 8080, 9090 , 工程提供了两个配置, 通过profile可以分别在两个端口启动连个服务, 
+在页面http://localhost:8080/index.html 中访问 localhost:9090/api/car/getCar7, 会发现跨域问题.
+解决方式
+1. 通过注解@CrossOrigin, 可以添加在类上, 也可以添加在方法上
+   ```java
+   @CrossOrigin(origins = "http://localhost:8080")
+   @GetMapping("/getCar7")
+   public Car getCar7() {
+      return new Car("bmw", 1000000, new Date());
+   }
+   ```
+2. 通过重写WebMvcConfigurer的addCorsMappings方法
+   ```java
+   @Configuration
+   public class MvcConfig implements WebMvcConfigurer {
+      @Override
+      public void addCorsMappings(CorsRegistry registry) {
+         registry.addMapping("/api/**")
+                 .allowedOrigins("http://localhost:8080")
+                 .allowedMethods("GET", "POST")
+                 .allowedHeaders("*")
+                 .allowCredentials(true)
+                 .maxAge(3600);
+      }
+   }
+   ```
+3. CORS With Spring Security
+
+If we use Spring Security in our project, we must take an extra step to make sure it plays well with CORS. That's because CORS needs to be processed first. Otherwise, Spring Security will reject the request before it reaches Spring MVC.
+Luckily, Spring Security provides an out-of-the-box solution:
+
+@EnableWebSecurity
+public class WebSecurityConfig {
+
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        http.cors().and()...
+    }
+}

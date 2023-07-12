@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+ <head>
+    <meta charset="UTF-8">
+    <title>Artisan</title>
+    <script src="jquery-3.3.1.js"></script>
+ </head>
+<body>
+    <div id="app"></div>
+    <input type="button" value="GBT" onclick="getData()">
+    <script>
+        function getData() {
+            $.get('http://localhost:9090/api/car/getCar7', function(data) {
+                $('#app').html(data.data);
+            });
+        }
+    </script>
+</body>
+</html>

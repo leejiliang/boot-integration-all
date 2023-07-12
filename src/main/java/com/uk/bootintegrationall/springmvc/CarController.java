@@ -19,6 +19,7 @@ import java.time.LocalDate;
 @RestController
 @RequestMapping("/car")
 @Validated
+//@CrossOrigin(origins = "http://localhost:8080", methods = RequestMethod.GET)
 public class CarController {
 
     @GetMapping("/getCar")
@@ -55,5 +56,11 @@ public class CarController {
     @PostMapping("/getCar6")
     public String getCar5(@RequestBody @Valid CarReq carReq) {
         return carReq.toString();
+    }
+
+//    @CrossOrigin(origins = "http://localhost:8080", methods = RequestMethod.GET)
+    @GetMapping("/getCar7")
+    public String getCar7() {
+        return "car7";
     }
 }
