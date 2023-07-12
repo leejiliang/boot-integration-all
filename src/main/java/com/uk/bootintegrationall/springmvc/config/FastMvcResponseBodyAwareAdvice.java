@@ -50,7 +50,7 @@ public class FastMvcResponseBodyAwareAdvice implements ResponseBodyAdvice<Object
         }
         for (int i = 0; i < basePackages.length; i++) {
             if (declaringClass.getPackage().getName().startsWith(basePackages[i])) {
-                return true;
+                return false;
             }
         }
         return false;

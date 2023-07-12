@@ -7,9 +7,11 @@ import org.springframework.format.datetime.DateFormatterRegistrar;
 import org.springframework.format.datetime.standard.DateTimeFormatterRegistrar;
 import org.springframework.format.support.DefaultFormattingConversionService;
 import org.springframework.format.support.FormattingConversionService;
+import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
 
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 /**
  * @Description 这里的弊端是, 无法覆盖到GlobalExceptionHandler中的返回值格式化处理.
@@ -33,4 +35,5 @@ public class DateTimeConfig extends WebMvcConfigurationSupport {
 
         return conversionService;
     }
+
 }

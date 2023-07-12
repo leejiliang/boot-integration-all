@@ -367,6 +367,47 @@ spring.servlet.multipart.location=classpath:/public/
 
 
 ### 3.12 响应图片/视屏数据
+[参考文档](https://www.baeldung.com/spring-mvc-image-media-data)
+1. Using the HttpServletResponse
+直接把文件通过response输出
+```java
+@GetMapping("/image")
+public void getImageAsByteArray(HttpServletResponse response) throws IOException {
+    InputStream inputStream= servletContext.getResourceAsStream("/WEB-INF/images/image-example.jpg");
+    response.setContentType(MediaType.IMAGE_JPEG_VALUE);
+    IOUtils.copy(inputStream, response.getOutputStream());
+}
+```
+2. Using the HttpMessageConverter
+2.1 配置HttpMessageConverter
+`com.uk.bootintegrationall.springmvc.config.MediaTypeMessageConfig`
+2.2 定义Controller
+```java
+    @GetMapping("/image2")
+    @IgnoreAware
+    public @ResponseBody byte[] getImageAsByteArray() throws IOException {
+        InputStream in = servletContext.getResourceAsStream("/WEB-INF/images/image-example.jpg");
+        return org.apache.commons.io.IOUtils.toByteArray(in);
+    }
+```
+需要注意的是如果mvc对返回值进行了统一的封装, 就需要对该类型的返回值进行忽略, 否则会报错, 这里我直接在
+`com.uk.bootintegrationall.springmvc.config.FastMvcResponseBodyAwareAdvice#getIsSupport` 里面直接返回类false
+3. Using the ResponseEntity Class
+```java
+@RequestMapping(value = "/image3", method = RequestMethod.GET)
+    public ResponseEntity<byte[]> getImageAsResponseEntity() throws IOException {
+        HttpHeaders headers = new HttpHeaders();
+        InputStream in = servletContext.getResourceAsStream("/WEB-INF/images/image-example.jpg");
+        byte[] media = IOUtils.toByteArray(in);
+        headers.setCacheControl(CacheControl.noCache().getHeaderValue());
 
+        ResponseEntity<byte[]> responseEntity = new ResponseEntity<>(media, headers, HttpStatus.OK);
+        return responseEntity;
+    }
+```
+需要注意的是如果mvc对返回值进行了统一的封装, 就需要对该类型的返回值进行忽略, 否则会报错, 这里我直接在
+`com.uk.bootintegrationall.springmvc.config.FastMvcResponseBodyAwareAdvice#getIsSupport` 里面直接返回类false
+4. Returning Image Using the Resource Class
+暂时无法实现, 会报错.
 
 ### 3.12 分页查询

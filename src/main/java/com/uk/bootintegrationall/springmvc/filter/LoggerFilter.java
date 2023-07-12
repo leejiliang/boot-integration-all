@@ -11,7 +11,7 @@ import java.io.IOException;
 /**
  * @Description TODO
  */
-@WebFilter(urlPatterns = "/*", initParams = {@WebInitParam(name = "allowedMethods", value = "GET,POST")})
+//@WebFilter(urlPatterns = "/*", initParams = {@WebInitParam(name = "allowedMethods", value = "GET,POST")})
 public class LoggerFilter implements Filter {
     Logger logger = LoggerFactory.getLogger(getClass());
     @Override
