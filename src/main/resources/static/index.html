@@ -8,6 +8,19 @@
 <body>
     <div id="app"></div>
     <input type="button" value="GBT" onclick="getData()">
+    <div>
+        <form method="POST" action="/api/car/upload/image" enctype="multipart/form-data">
+            <table>
+                <tr>
+                    <td><label path="file">Select a file to upload</label></td>
+                    <td><input type="file" name="file" /></td>
+                </tr>
+                <tr>
+                    <td><input type="submit" value="Submit" /></td>
+                </tr>
+            </table>
+            </form>
+    </div>
     <script>
         function getData() {
             $.get('http://localhost:9090/api/car/getCar7', function(data) {

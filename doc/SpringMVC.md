@@ -331,3 +331,42 @@ public class WebSecurityConfig {
         http.cors().and()...
     }
 }
+
+### 3.11 文件上传
+通过配置, 进行一些通用配置
+```properties
+spring.servlet.multipart.enabled=true
+spring.servlet.multipart.max-file-size=10MB
+spring.servlet.multipart.max-request-size=10MB
+spring.servlet.multipart.location=classpath:/public/
+```
+1. 通过MultipartFile接收文件
+```java
+@PostMapping("/upload/image")
+    public void uploadCarImage(@RequestParam MultipartFile file, ModelMap modelMap) {
+        modelMap.addAttribute("file", file);
+        storageService.store(file);
+    }
+```
+2. 定义文件上传表单
+```html
+<form method="POST" action="/api/car/upload/image" enctype="multipart/form-data">
+            <table>
+                <tr>
+                    <td><label path="file">Select a file to upload</label></td>
+                    <td><input type="file" name="file" /></td>
+                </tr>
+                <tr>
+                    <td><input type="submit" value="Submit" /></td>
+                </tr>
+            </table>
+            </form>
+```
+3. 定义文件的保存服务
+`com.uk.bootintegrationall.springmvc.StorageService`
+
+
+### 3.12 响应图片/视屏数据
+
+
+### 3.12 分页查询
