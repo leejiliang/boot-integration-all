@@ -7,7 +7,11 @@ import com.uk.bootintegrationall.springmvc.exception.ServerExceptionEnum;
 import com.uk.bootintegrationall.springmvc.util.CarReq;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties;
 import org.springframework.core.io.Resource;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.*;
 import org.springframework.ui.ModelMap;
@@ -16,7 +20,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.support.ServletContextResource;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.management.modelmbean.ModelMBean;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
@@ -127,5 +130,10 @@ public class CarController {
         return new ResponseEntity<>(resource, headers, HttpStatus.OK);
     }
 
+    @GetMapping("/page")
+    public void getCarPage(@PageableDefault Pageable pageable) {
+        Pageable of = PageRequest.of(1, 10);
+        System.out.println("pageable = " + pageable);
+    }
 
 }

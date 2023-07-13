@@ -411,3 +411,16 @@ public void getImageAsByteArray(HttpServletResponse response) throws IOException
 暂时无法实现, 会报错.
 
 ### 3.12 分页查询
+使用spring-data-jpa提供的分页组件, Pageable
+配置: MediaTypeMessageConfig#addArgumentResolvers
+使用: 
+```java
+    @GetMapping("/page")
+    public void getCarPage(@PageableDefault Pageable pageable) {
+        Pageable of = PageRequest.of(1, 10);
+        System.out.println("pageable = " + pageable);
+    }
+```
+请求
+`GET http://localhost:8080/api/car/page?page=1&size=10&sort=name,desc&sort=age,asc`
+pageable打印: `pageable = Page request [number: 1, size 10, sort: name: DESC,age: ASC]`
