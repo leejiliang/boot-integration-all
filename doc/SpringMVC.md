@@ -424,3 +424,9 @@ public void getImageAsByteArray(HttpServletResponse response) throws IOException
 请求
 `GET http://localhost:8080/api/car/page?page=1&size=10&sort=name,desc&sort=age,asc`
 pageable打印: `pageable = Page request [number: 1, size 10, sort: name: DESC,age: ASC]`
+### 3.13 使用枚举作为Controller入参
+正常情况下可以直接用枚举值作为参数使用, 但是如果请求传递的入参是个不合法入参, 就会报错, 为了避免这种情况, 可以使用自定义转换器来实现枚举值的转换或报错.
+1. 定义转换器
+`com.uk.bootintegrationall.springmvc.config.StringToEnumConverter`
+2. 配置转换器
+`com.uk.bootintegrationall.springmvc.config.MediaTypeMessageConfig#addFormatters`

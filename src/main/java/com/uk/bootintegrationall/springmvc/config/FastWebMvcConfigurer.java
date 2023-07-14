@@ -5,6 +5,7 @@ import com.uk.bootintegrationall.springmvc.interceptor.LoggerInterceptor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.data.web.config.EnableSpringDataWebSupport;
+import org.springframework.format.FormatterRegistry;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -28,9 +29,9 @@ public class FastWebMvcConfigurer implements WebMvcConfigurer {
         registry.addInterceptor(new AuthInterceptor());
     }
 
-    @Override
-    public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/api/**").allowedOrigins("*").allowedMethods("*").allowedHeaders("*").maxAge(3600);
-        WebMvcConfigurer.super.addCorsMappings(registry);
-    }
+    //    @Override
+//    public void addCorsMappings(CorsRegistry registry) {
+//        registry.addMapping("/api/**").allowedOrigins("*").allowedMethods("*").allowedHeaders("*").maxAge(3600);
+//        WebMvcConfigurer.super.addCorsMappings(registry);
+//    }
 }

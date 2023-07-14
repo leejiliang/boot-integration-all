@@ -9,6 +9,7 @@ import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties;
 import org.springframework.core.io.Resource;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -28,6 +29,7 @@ import javax.validation.constraints.Min;
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDate;
+import java.util.List;
 
 /**
  * @Description TODO
@@ -131,9 +133,15 @@ public class CarController {
     }
 
     @GetMapping("/page")
-    public void getCarPage(@PageableDefault Pageable pageable) {
+    public Page<String> getCarPage(@PageableDefault Pageable pageable) {
         Pageable of = PageRequest.of(1, 10);
         System.out.println("pageable = " + pageable);
+        return Page.empty();
+    }
+
+    @GetMapping("/car8")
+    public String getCar8(@RequestParam CarBanner carBanner) {
+        return "car8"+carBanner.name();
     }
 
 }

@@ -4,6 +4,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.data.web.config.EnableSpringDataWebSupport;
+import org.springframework.format.FormatterRegistry;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.BufferedImageHttpMessageConverter;
 import org.springframework.http.converter.ByteArrayHttpMessageConverter;
@@ -21,13 +22,12 @@ import java.util.List;
 @EnableSpringDataWebSupport
 public class MediaTypeMessageConfig extends WebMvcConfigurationSupport {
 
-    @Override
-    protected void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
-        converters.add(byteArrayHttpMessageConverter());
-//        BufferedImageHttpMessageConverter bufferedImageHttpMessageConverter = new BufferedImageHttpMessageConverter("");
-//        bufferedImageHttpMessageConverter.getSupportedMediaTypes().addAll(getSupportedMediaTypes());
-//        converters.add(bufferedImageHttpMessageConverter);
-    }
+//    @Override
+//    protected void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
+////        converters.add(byteArrayHttpMessageConverter());
+////        converters.add(bufferedImageHttpMessageConverter());
+////        super.configureMessageConverters(converters);
+//    }
 
     @Bean
     public ByteArrayHttpMessageConverter byteArrayHttpMessageConverter() {
@@ -48,5 +48,11 @@ public class MediaTypeMessageConfig extends WebMvcConfigurationSupport {
     protected void addArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolvers) {
         argumentResolvers.add(new PageableHandlerMethodArgumentResolver());
         super.addArgumentResolvers(argumentResolvers);
+    }
+
+    @Override
+    protected void addFormatters(FormatterRegistry registry) {
+        registry.addConverter(new StringToEnumConverter());
+        super.addFormatters(registry);
     }
 }

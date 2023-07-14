@@ -3,7 +3,9 @@ package com.uk.bootintegrationall.springmvc.exception;
 import com.uk.bootintegrationall.springmvc.config.CResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.convert.ConversionFailedException;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindException;
 import org.springframework.validation.ObjectError;
@@ -157,5 +159,11 @@ public class GlobalExceptionHandler {
     @ResponseBody
     public CResult methodNotAllowed() {
         return CResult.ofFailByMethodNotAllowed(request.getRequestURL().toString());
+    }
+
+
+    @ExceptionHandler(ConversionFailedException.class)
+    public ResponseEntity<String> handleConflict(RuntimeException ex) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
     }
 }
