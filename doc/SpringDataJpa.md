@@ -6,7 +6,8 @@
             <artifactId>spring-boot-starter-data-jpa</artifactId>
         </dependency>
 ```
-# java配置
+# redis基础配置
 ```java
+
 
 ```
