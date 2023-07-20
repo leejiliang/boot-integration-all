@@ -59,3 +59,21 @@ public class UserInfoService {
     }
 }
 ```
+# 详细使用
+## 1. 设置带过期时间的key
+```java
+redisTemplate.opsForValue().set("test-object", 1, 10, TimeUnit.SECONDS);
+```
+## 2. 模拟并发锁
+```java
+var absent = redisTemplate.opsForValue().setIfAbsent("con-lock", "1", 10, TimeUnit.SECONDS);
+if(!absent){
+    System.out.println("获取锁失败");
+    return;
+}
+try {
+    System.out.println("处理并发业务");
+}finally {
+    redisTemplate.delete("con-lock");
+}
+```

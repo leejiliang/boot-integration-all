@@ -24,5 +24,15 @@ public class UserInfoService {
         redisTemplate.opsForValue().set("test-object", 1);
         stringRedisTemplate.opsForValue().set("test-string", "1");
         stringRedisTemplate.opsForValue().set("test-string-exp", "1", 10, TimeUnit.SECONDS);
+        var absent = redisTemplate.opsForValue().setIfAbsent("con-lock", "1", 10, TimeUnit.SECONDS);
+        if(!absent){
+            System.out.println("获取锁失败");
+            return;
+        }
+        try {
+            System.out.println("处理并发业务");
+        }finally {
+            redisTemplate.delete("con-lock");
+        }
     }
 }
