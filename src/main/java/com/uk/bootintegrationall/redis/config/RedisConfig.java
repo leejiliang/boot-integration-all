@@ -49,7 +49,5 @@ public class RedisConfig {
         return Map.of("car-info", RedisCacheConfiguration.defaultCacheConfig().prefixCacheNameWith("car-config::").entryTtl(Duration.of(20, ChronoUnit.SECONDS)),
             "banner-info", RedisCacheConfiguration.defaultCacheConfig().prefixCacheNameWith("banner-config::").entryTtl(Duration.of(40, ChronoUnit.SECONDS)));
     }
-
-
 }
 

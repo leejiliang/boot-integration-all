@@ -78,3 +78,42 @@ try {
     redisTemplate.delete("con-lock");
 }
 ```
+## 3. 使用cacheable缓存方法的返回值
+```java
+@Cacheable(value = "user-info", key = "#userId")
+    public UserInfo getUserInfo(String userId) {
+        logger.info("penetration query db");
+        var userInfo = new UserInfo();
+        userInfo.setId(userId);
+        userInfo.setName("test");
+        userInfo.setAge(19);
+        return userInfo;
+    }
+```
+进行个性化配置
+```java
+@Bean
+public CacheManager cacheManager(RedisConnectionFactory factory) {
+    GenericJackson2JsonRedisSerializer genericJackson2JsonRedisSerializer = new GenericJackson2JsonRedisSerializer();
+    StringRedisSerializer stringRedisSerializer = new StringRedisSerializer();
+    // 配置序列化
+    RedisCacheConfiguration config = RedisCacheConfiguration.defaultCacheConfig();
+    RedisCacheConfiguration redisCacheConfiguration = config
+        // 键序列化方式 redis字符串序列化
+        .serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(stringRedisSerializer))
+        .prefixCacheNameWith("creams::")
+        .entryTtl(Duration.of(60, ChronoUnit.SECONDS))
+        // 值序列化方式 简单json序列化
+        .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(genericJackson2JsonRedisSerializer));
+    return RedisCacheManager.builder(factory)
+        .cacheDefaults(redisCacheConfiguration)
+        .withCacheConfiguration("user-info", RedisCacheConfiguration.defaultCacheConfig().prefixCacheNameWith("user-config::").entryTtl(Duration.of(100, ChronoUnit.SECONDS)))
+        .withInitialCacheConfigurations(customCacheConfigurations())
+        .build();
+}
+
+private Map<String, RedisCacheConfiguration> customCacheConfigurations() {
+    return Map.of("car-info", RedisCacheConfiguration.defaultCacheConfig().prefixCacheNameWith("car-config::").entryTtl(Duration.of(20, ChronoUnit.SECONDS)),
+        "banner-info", RedisCacheConfiguration.defaultCacheConfig().prefixCacheNameWith("banner-config::").entryTtl(Duration.of(40, ChronoUnit.SECONDS)));
+}
+```
