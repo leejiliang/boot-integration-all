@@ -1,16 +1,20 @@
 package com.uk.bootintegrationall.redis;
 
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Logger;
 
 /**
  * @Description TODO
  */
 @Service
 public class UserInfoService {
+
+    private static Logger logger = Logger.getLogger(UserInfoService.class.getName());
 
     private final RedisTemplate<Object, Object> redisTemplate;
     private final StringRedisTemplate stringRedisTemplate;
@@ -34,5 +38,15 @@ public class UserInfoService {
         }finally {
             redisTemplate.delete("con-lock");
         }
+    }
+
+    @Cacheable(value = "user-info", key = "#userId")
+    public UserInfo getUserInfo(String userId) {
+        logger.info("penetration query db");
+        var userInfo = new UserInfo();
+        userInfo.setId(userId);
+        userInfo.setName("test");
+        userInfo.setAge(19);
+        return userInfo;
     }
 }

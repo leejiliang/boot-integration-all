@@ -65,6 +65,7 @@ public class UserInfoService {
 redisTemplate.opsForValue().set("test-object", 1, 10, TimeUnit.SECONDS);
 ```
 ## 2. 模拟并发锁
+如果业务处理时间过长, 锁自动释放, 可能会导致并发问题.
 ```java
 var absent = redisTemplate.opsForValue().setIfAbsent("con-lock", "1", 10, TimeUnit.SECONDS);
 if(!absent){

@@ -1,20 +1,22 @@
 package com.uk.bootintegrationall.redis;
 
+import java.io.Serializable;
+
 /**
  * @Description TODO
  */
-public class UserInfo {
-    private Long id ;
+public class UserInfo implements Serializable {
+    private String id ;
 
     private String name;
 
     private Integer age;
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 
