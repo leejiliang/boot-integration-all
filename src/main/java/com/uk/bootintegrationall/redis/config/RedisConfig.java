@@ -28,9 +28,12 @@ public class RedisConfig {
         RedisCacheConfiguration redisCacheConfiguration = config
             // 键序列化方式 redis字符串序列化
             .serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(stringRedisSerializer))
+            .prefixCacheNameWith("creams::")
             // 值序列化方式 简单json序列化
             .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(genericJackson2JsonRedisSerializer));
-        return RedisCacheManager.builder(factory).cacheDefaults(redisCacheConfiguration).build();
+        return RedisCacheManager.builder(factory)
+            .cacheDefaults(redisCacheConfiguration)
+            .build();
     }
 
 
