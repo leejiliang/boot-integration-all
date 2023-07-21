@@ -13,6 +13,11 @@ import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSeriali
 import org.springframework.data.redis.serializer.RedisSerializationContext;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
+import java.time.Duration;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalUnit;
+import java.util.concurrent.TimeUnit;
+
 /**
  * @Description TODO
  */
@@ -29,6 +34,7 @@ public class RedisConfig {
             // 键序列化方式 redis字符串序列化
             .serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(stringRedisSerializer))
             .prefixCacheNameWith("creams::")
+            .entryTtl(Duration.of(60, ChronoUnit.SECONDS))
             // 值序列化方式 简单json序列化
             .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(genericJackson2JsonRedisSerializer));
         return RedisCacheManager.builder(factory)
