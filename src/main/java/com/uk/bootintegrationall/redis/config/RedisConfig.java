@@ -16,6 +16,7 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalUnit;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -39,8 +40,14 @@ public class RedisConfig {
             .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(genericJackson2JsonRedisSerializer));
         return RedisCacheManager.builder(factory)
             .cacheDefaults(redisCacheConfiguration)
-            .withCacheConfiguration("user-info", redisCacheConfiguration.entryTtl(Duration.of(20, ChronoUnit.SECONDS)).disableKeyPrefix())
+            .withCacheConfiguration("user-info", RedisCacheConfiguration.defaultCacheConfig().prefixCacheNameWith("user-config::").entryTtl(Duration.of(100, ChronoUnit.SECONDS)))
+            .withInitialCacheConfigurations(customCacheConfigurations())
             .build();
+    }
+
+    private Map<String, RedisCacheConfiguration> customCacheConfigurations() {
+        return Map.of("car-info", RedisCacheConfiguration.defaultCacheConfig().prefixCacheNameWith("car-config::").entryTtl(Duration.of(20, ChronoUnit.SECONDS)),
+            "banner-info", RedisCacheConfiguration.defaultCacheConfig().prefixCacheNameWith("banner-config::").entryTtl(Duration.of(40, ChronoUnit.SECONDS)));
     }
 
 

@@ -25,6 +25,9 @@ public class UserInfoController {
 
     @GetMapping("/cacheable")
     public UserInfo testCacheable(@RequestParam String userId){
+        userInfoService.getCarInfo(userId);
+        userInfoService.getBannerInfo(userId);
+        userInfoService.getBillInfo(userId);
         return userInfoService.getUserInfo(userId);
     }
 }

@@ -49,4 +49,34 @@ public class UserInfoService {
         userInfo.setAge(19);
         return userInfo;
     }
+
+    @Cacheable(value = "car-info", key = "#userId")
+    public UserInfo getCarInfo(String userId) {
+        logger.info("penetration query db");
+        var userInfo = new UserInfo();
+        userInfo.setId(userId);
+        userInfo.setName("test");
+        userInfo.setAge(19);
+        return userInfo;
+    }
+
+    @Cacheable(value = "banner-info", key = "#userId")
+    public UserInfo getBannerInfo(String userId) {
+        logger.info("penetration query db");
+        var userInfo = new UserInfo();
+        userInfo.setId(userId);
+        userInfo.setName("test");
+        userInfo.setAge(19);
+        return userInfo;
+    }
+
+    @Cacheable(value = "bill-info", key = "#userId")
+    public UserInfo getBillInfo(String userId) {
+        logger.info("penetration query db");
+        var userInfo = new UserInfo();
+        userInfo.setId(userId);
+        userInfo.setName("test");
+        userInfo.setAge(19);
+        return userInfo;
+    }
 }
