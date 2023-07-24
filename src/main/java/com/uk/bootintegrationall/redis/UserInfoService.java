@@ -1,5 +1,7 @@
 package com.uk.bootintegrationall.redis;
 
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -77,6 +79,21 @@ public class UserInfoService {
         userInfo.setId(userId);
         userInfo.setName("test");
         userInfo.setAge(19);
+        return userInfo;
+    }
+
+    @CacheEvict(value = "user-info", key = "#userId")
+    public void deleteUserInfo(String userId) {
+        logger.info("cache evict");
+    }
+
+    @CachePut(value = "user-info", key = "#userId")
+    public UserInfo updateUserInfo(String userId) {
+        logger.info("update the cache");
+        var userInfo = new UserInfo();
+        userInfo.setId(userId);
+        userInfo.setName("test_updated");
+        userInfo.setAge(190);
         return userInfo;
     }
 }

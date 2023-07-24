@@ -40,7 +40,7 @@ public class RedisConfig {
             .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(genericJackson2JsonRedisSerializer));
         return RedisCacheManager.builder(factory)
             .cacheDefaults(redisCacheConfiguration)
-            .withCacheConfiguration("user-info", RedisCacheConfiguration.defaultCacheConfig().prefixCacheNameWith("user-config::").entryTtl(Duration.of(100, ChronoUnit.SECONDS)))
+//            .withCacheConfiguration("user-info", RedisCacheConfiguration.defaultCacheConfig().prefixCacheNameWith("user-config::").entryTtl(Duration.of(100, ChronoUnit.SECONDS)))
             .withInitialCacheConfigurations(customCacheConfigurations())
             .build();
     }
