@@ -117,3 +117,22 @@ private Map<String, RedisCacheConfiguration> customCacheConfigurations() {
         "banner-info", RedisCacheConfiguration.defaultCacheConfig().prefixCacheNameWith("banner-config::").entryTtl(Duration.of(40, ChronoUnit.SECONDS)));
 }
 ```
+## 4. 使用cachePut更新缓存
+```java
+    @CachePut(value = "user-info", key = "#userId")
+    public UserInfo updateUserInfo(String userId) {
+    logger.info("update the cache");
+    var userInfo = new UserInfo();
+    userInfo.setId(userId);
+    userInfo.setName("test_updated");
+    userInfo.setAge(190);
+    return userInfo;
+    }
+```
+## 5. 使用cacheEvict删除缓存
+```java
+    @CacheEvict(value = "user-info", key = "#userId")
+    public void deleteUserInfo(String userId) {
+        logger.info("cache evict");
+    }
+```
