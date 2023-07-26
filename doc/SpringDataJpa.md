@@ -160,4 +160,7 @@ public interface BigBookRepository extends JpaRepository<BigBook, Long> {
 ```sql
 select bigbook0_.id as id2_0_, bigbook0_.author_name as author_n3_0_, bigbook0_.title as title4_0_, bigbook0_.type_name as type_nam5_0_ from book bigbook0_ where bigbook0_.book_type='big_book' and bigbook0_.author_name=?
 ```
-可以看到这里自动加上了`book_type='big_book'`的条件.
+可以看到这里自动加上了`book_type='big_book'`的条件
+- //@Inheritance(strategy = InheritanceType.JOINED)
+  //@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
+这两种模式都是将父类和子类分开存储, 但是前者是通过外键关联, 后者是直接存储.
