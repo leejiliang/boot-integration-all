@@ -25,4 +25,14 @@ public class Customer {
     public Long getId() {
         return id;
     }
+
+    @Override
+    public String toString() {
+        return "Customer{" +
+            "id=" + id +
+            ", name='" + name + '\'' +
+            ", email='" + email + '\'' +
+            ", address='" + address + '\'' +
+            '}';
+    }
 }

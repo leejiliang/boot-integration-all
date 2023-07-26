@@ -79,4 +79,85 @@ Hibernate: select customer0_.name as col_0_0_ from customer customer0_ where cus
 ```
 可以看到这里只查询了name属性.
 
+## @Query
 
+- 定义基本查询方法
+JPQL语法
+  https://docs.oracle.com/html/E13946_04/ejb3_langref.html
+```java
+//    @Query("from Customer where name = ?1")
+@Query("from Customer where name = :name")
+    Customer findByQueryName(String name);
+```
+以上两种传参方式均支持.
+- 动态查询
+## @Entity
+必须有主键或复合主键
+所有字段都会被映射到数据库, 除非使用`@Transient`注解
+- @Id表示主键, GeneratedValue表示主键生成策略
+- @Basic 表示普通字段, 默认
+- @Transient 表示不映射到数据库
+- @Temporal 表示日期类型, 可以指定精度
+- @Enumerated 表示枚举类型, 默认是枚举的序号, 可以指定为枚举的名称
+- @IdClass 表示复合主键
+- @Embedded 表示嵌入式对象
+- @EmbeddedId 表示嵌入式主键
+## 实体之间的继承关系
+- @Inheritance(strategy = InheritanceType.SINGLE_TABLE) 表示多个子类和父类在同一张表中
+1. 定义父类
+```java
+@Entity
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "book_type", discriminatorType = DiscriminatorType.STRING)
+public class Book {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private String title;
+
+    private String authorName;
+
+```
+2. 定义子类1
+```java
+@Entity
+@DiscriminatorValue("big_book")
+public class BigBook extends Book {
+    private String typeName;
+}
+```
+3. 定义子类2
+```java
+@Entity
+@DiscriminatorValue("small_book")
+public class SmallBook extends Book {
+    private String typeName;
+}
+```
+4. 定义子类1Repository
+```java
+@Repository
+public interface BigBookRepository extends JpaRepository<BigBook, Long> {
+
+    List<BigBook> findBigBookByAuthorName(String authorName);
+}
+```
+5. 测试
+```java
+    @Test
+    void findBigBookByAuthorName() {
+
+        var bigBook = new BigBook();
+        bigBook.setAuthorName("zhangsan");
+        bigBook.setTitle("红楼梦");
+        bigBook.setTypeName("古典小说");
+        bigBookRepository.saveAndFlush(bigBook);
+        bigBookRepository.findBigBookByAuthorName("zhangsan").forEach(System.out::println);
+    }
+```
+6. 打印sql
+```sql
+select bigbook0_.id as id2_0_, bigbook0_.author_name as author_n3_0_, bigbook0_.title as title4_0_, bigbook0_.type_name as type_nam5_0_ from book bigbook0_ where bigbook0_.book_type='big_book' and bigbook0_.author_name=?
+```
+可以看到这里自动加上了`book_type='big_book'`的条件.

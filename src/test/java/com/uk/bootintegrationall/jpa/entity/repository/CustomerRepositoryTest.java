@@ -19,4 +19,10 @@ class CustomerRepositoryTest {
         var customerOnlyName = customerRepository.findByName("zhangsan");
         System.out.println(customerOnlyName.getName());
     }
+
+    @Test
+    void findByQueryName() {
+        var customer = customerRepository.findByQueryName("zhangsan");
+        System.out.println(customer.toString());
+    }
 }
