@@ -16,12 +16,12 @@
 `org.springframework.data.jpa.repository.support.SimpleJpaRepository`
 
 # 基本使用
-## 1. 创建实体类
+1. 创建实体类
 ```java
 @Entity
 public class Customer{}
 ```
-## 2. 创建Repository接口
+ 2. 创建Repository接口
 ```java
 //public interface CustomerRepository extends Repository {
 //public interface CustomerRepository extends CrudRepository<Customer, Long> {
@@ -29,7 +29,7 @@ public interface CustomerRepository extends PagingAndSortingRepository<Customer,
 }
 ```
 通过继承不同的接口, 可以使得Repository拥有不同的功能. 具体选择可以根据实际场景来选择.
-## 3. 选择性暴露部分接口
+ 3. 选择性暴露部分接口
 ```java
 @NoRepositoryBean
 public interface MyRepository<T, ID> extends Repository<T, ID> {
@@ -37,10 +37,10 @@ public interface MyRepository<T, ID> extends Repository<T, ID> {
     <S extends T> S save(S entity);
 }
 ```
-## 4. 排序和分页
+ 4. 排序和分页
 通过参数: Pageable pageable  和  Sort来实现
 
-## 5. 返回结果的支持,如何返回DTO, 异步支持
+ 5. 返回结果的支持,如何返回DTO, 异步支持
 - 异步
 查询方法返回值类型可以是`Future<T>`或者`CompletableFuture<T>`, 也可以是`ListenableFuture<T>`, 但是需要添加`@EnableAsync`注解.
 - 返回的类型支持
@@ -175,3 +175,50 @@ select bigbook0_.id as id2_0_, bigbook0_.author_name as author_n3_0_, bigbook0_.
 3. 在OneToMany中删除Many属性时, 需要在One属性中添加`orphanRemoval = true`属性, 否则不会执行delete.
 4. 如果需要自定义外键属性名, 通过joinColumn 来指定.
 5. 多对多的删除, 需要通过双方解除绑定关系来执行关系删除操作.
+
+## Jackson
+- jpa实体之间的关联关系, 需要注意死循环
+ToString 死循环
+Lombok注解: @ToString(exclude = "students")
+ToJson 死循环
+Jackson注解: @JsonIgnoreProperties("students")
+
+# 高阶用法
+## JpaSpecificationExecutor
+### QueryByExampleExecutor
+JpaRepository 继承 JpaSpecificationExecutor 例如: 
+`com.uk.bootintegrationall.jpa.entity.repository.StudentRepository`
+创建查询: 
+```java
+@Test
+@DisplayName("Specification测试")
+@Rollback(value = false)
+@Transactional
+void testSpecQuery() {
+    var studentSpecification = new Specification<Student>() {
+        @Override
+        public Predicate toPredicate(Root<Student> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
+            var nameLike = criteriaBuilder.like(root.get("name"), "%三%");
+            var emailLike = criteriaBuilder.like(root.get("email"), "%@email.com");
+            var subItemIn = criteriaBuilder.in(root.join("teachers").get("course")).value(List.of("语文","英语"));
+            var nameOrMail = criteriaBuilder.or(nameLike, emailLike);
+            var finalCriteria = criteriaBuilder.and(nameOrMail, subItemIn);
+            return query.where(finalCriteria).getRestriction();
+        }
+    };
+    studentRepository.findAll(studentSpecification).forEach(System.out::println);
+}
+```
+打印sql
+```sql
+select student0_.id      as id1_4_,
+       student0_.address as address2_4_,
+       student0_.email   as email3_4_,
+       student0_.name    as name4_4_
+from student student0_
+         inner join teacher_students teachers1_ on student0_.id = teachers1_.students_id
+         inner join teacher teacher2_ on teachers1_.teachers_id = teacher2_.id
+where (student0_.name like ? or student0_.email like ?)
+  and (teacher2_.course in (?, ?));
+```
+## Jpa审计功能

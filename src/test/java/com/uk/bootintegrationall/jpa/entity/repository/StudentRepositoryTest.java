@@ -8,9 +8,15 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+import java.util.List;
 import java.util.Optional;
 
 @SpringBootTest
@@ -135,5 +141,24 @@ class StudentRepositoryTest {
             i.getQqAccount().add(qqAccount);
             studentRepository.save(i);
         });
+    }
+
+    @Test
+    @DisplayName("Specification测试")
+    @Rollback(value = false)
+    @Transactional
+    void testSpecQuery() {
+        var studentSpecification = new Specification<Student>() {
+            @Override
+            public Predicate toPredicate(Root<Student> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
+                var nameLike = criteriaBuilder.like(root.get("name"), "%三%");
+                var emailLike = criteriaBuilder.like(root.get("email"), "%@email.com");
+                var subItemIn = criteriaBuilder.in(root.join("teachers").get("course")).value(List.of("语文","英语"));
+                var nameOrMail = criteriaBuilder.or(nameLike, emailLike);
+                var finalCriteria = criteriaBuilder.and(nameOrMail, subItemIn);
+                return query.where(finalCriteria).getRestriction();
+            }
+        };
+        studentRepository.findAll(studentSpecification).forEach(System.out::println);
     }
 }

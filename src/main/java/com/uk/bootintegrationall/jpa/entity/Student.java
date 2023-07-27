@@ -1,5 +1,6 @@
 package com.uk.bootintegrationall.jpa.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -33,5 +34,6 @@ public class Student {
     private Set<QQAccount> qqAccount = new HashSet<>();
 
     @ManyToMany(mappedBy = "students", cascade = CascadeType.ALL)
+    @JsonIgnoreProperties("students")
     private Set<Teacher> teachers = new HashSet<>();
 }
