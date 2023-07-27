@@ -248,4 +248,62 @@ EntityManager
 还可以通过重写SimpleJpaRepository来实现类来修改Repository的功能. 例如: 将所有的删除操作修改为逻辑删除.
 在启动类中注入重写后的基础类即可.
 @EnableJparepositories(repositoryBaseClass = CustomSimpleJpaRepository.class)
-## Jpa审计功能
+## Jpa审计功能Auditing
+有三种实现审计功能的方式:
+- 方式一: 
+1. 实体类中添加注解属性, 类上添加注解: @EntityListeners(AuditingEntityListener.class)
+
+```java
+    @CreatedBy
+    private Long creatorId;
+
+    @CreatedDate
+    private LocalDateTime createTime;
+
+    @LastModifiedBy
+    private Long modifierId;
+
+    @LastModifiedDate
+    private LocalDateTime modifyTime;
+```
+2. 实现AuditorAware接口
+```java
+@Component
+public class MyAuditorAware implements AuditorAware<Long> {
+    /**
+     * 可以从Security, req中获取当前用户信息
+     * @return
+     */
+    @Override
+    public Optional<Long> getCurrentAuditor() {
+        return Optional.ofNullable(888L);
+    }
+}
+```
+3. 开启审计功能
+`@EnableJpaAuditing`
+- 方式二
+第一步方式替换为: 实现类实现Auditable接口, 对实体入侵比较严重, 不推荐.
+- 方式三
+@MappedSuperClass
+1. 定义基类
+```java
+@Data
+@MappedSuperclass
+@EntityListeners(AuditingEntityListener.class)
+public class BaseEntity {
+
+    @CreatedBy
+    private Long creatorId;
+
+    @CreatedDate
+    private LocalDateTime createTime;
+
+    @LastModifiedBy
+    private Long modifierId;
+
+    @LastModifiedDate
+    private LocalDateTime modifyTime;
+}
+```
+2. 实体类继承基类即可.

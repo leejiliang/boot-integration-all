@@ -16,7 +16,7 @@ import java.util.Set;
 @Getter
 @Setter
 @ToString(callSuper = false)
-public class Student {
+public class Student extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
