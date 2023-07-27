@@ -116,4 +116,24 @@ class StudentRepositoryTest {
         });
         studentRepository.save(student);
     }
+
+    @Test
+    @DisplayName("更新测试")
+    @Rollback(value = false)
+    @Transactional
+    void testUpdate() {
+        studentRepository.findById(44L).ifPresent(i -> {
+            i.setName("张三2");
+            i.setEmail("2222@emai.com");
+            i.getFamily().setFatherName("苏有朋");
+            i.getTeachers().forEach(j -> j.setCourse("英语"));
+            var qqAccount = new QQAccount();
+            qqAccount.setQqName("张三QQ1111");
+            qqAccount.setQqNumber("1111112222");
+            qqAccount.setQqPassword("1111113333");
+            qqAccount.setStudent(i);
+            i.getQqAccount().add(qqAccount);
+            studentRepository.save(i);
+        });
+    }
 }

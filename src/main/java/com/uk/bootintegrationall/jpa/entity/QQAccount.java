@@ -1,8 +1,6 @@
 package com.uk.bootintegrationall.jpa.entity;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 import javax.persistence.*;
 
@@ -13,6 +11,8 @@ import javax.persistence.*;
 @Getter
 @Setter
 @ToString(exclude = "student")
+@NoArgsConstructor
+@AllArgsConstructor
 public class QQAccount {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO )
