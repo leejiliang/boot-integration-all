@@ -164,3 +164,14 @@ select bigbook0_.id as id2_0_, bigbook0_.author_name as author_n3_0_, bigbook0_.
 - //@Inheritance(strategy = InheritanceType.JOINED)
   //@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 这两种模式都是将父类和子类分开存储, 但是前者是通过外键关联, 后者是直接存储.
+
+## 实体之间的关联关系
+![relation](https://image-blog-lee.oss-cn-hangzhou.aliyuncs.com/uPic/2hbHCz.png)
+所有关系聚合对象: 
+`com.uk.bootintegrationall.jpa.entity.Student`
+- 原则: 
+1. 在被维护外键的Entity中定义mappedBy属性, 例如: `@OneToMany(mappedBy = "student")`
+2. 在维护外键的Entity中定义外键属性, 例如: `@JoinColumn(name = "student_id")`
+3. 在OneToMany中删除Many属性时, 需要在One属性中添加`orphanRemoval = true`属性, 否则不会执行delete.
+4. 如果需要自定义外键属性名, 通过joinColumn 来指定.
+5. 多对多的删除, 需要通过双方解除绑定关系来执行关系删除操作.

@@ -1,0 +1,37 @@
+package com.uk.bootintegrationall.jpa.entity;
+
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
+import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
+
+/**
+ * @Description TODO
+ */
+@Entity
+@Getter
+@Setter
+@ToString(callSuper = true)
+public class Student {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
+
+    private String name;
+
+    private String email;
+
+    private String address;
+
+    @OneToOne(mappedBy = "student", cascade = CascadeType.ALL)
+    private Family family;
+
+    @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<QQAccount> qqAccount = new HashSet<>();
+
+    @ManyToMany(mappedBy = "students", cascade = CascadeType.ALL)
+    private Set<Teacher> teachers = new HashSet<>();
+}
