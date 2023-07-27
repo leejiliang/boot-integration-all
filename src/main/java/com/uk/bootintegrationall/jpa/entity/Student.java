@@ -15,7 +15,7 @@ import java.util.Set;
 @Entity
 @Getter
 @Setter
-@ToString(callSuper = true)
+@ToString(callSuper = false)
 public class Student {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

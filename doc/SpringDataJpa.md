@@ -221,4 +221,9 @@ from student student0_
 where (student0_.name like ? or student0_.email like ?)
   and (teacher2_.course in (?, ?));
 ```
+## 自定义Repository
+### EntityManager
+@PersistenceContext
+EntityManager
+
 ## Jpa审计功能

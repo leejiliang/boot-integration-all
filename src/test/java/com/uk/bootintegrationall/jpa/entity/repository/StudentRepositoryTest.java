@@ -12,6 +12,9 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
@@ -25,6 +28,9 @@ class StudentRepositoryTest {
 
     @Autowired
     private StudentRepository studentRepository;
+
+    @PersistenceContext
+    private EntityManager entityManager;
 
     @Test
     @DisplayName("插入测试")
@@ -160,5 +166,11 @@ class StudentRepositoryTest {
             }
         };
         studentRepository.findAll(studentSpecification).forEach(System.out::println);
+    }
+
+    @Test
+    void testEntityManager() {
+        var query = entityManager.createQuery("select s from Student s where s.name like '%三%' and s.email like '%@email%'");
+        query.getResultList().forEach(System.out::println);
     }
 }
