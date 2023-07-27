@@ -307,3 +307,4 @@ public class BaseEntity {
 }
 ```
 2. 实体类继承基类即可.
+## @Entity里面的回调方法
