@@ -245,4 +245,7 @@ EntityManager
         });
     }
 ```
+还可以通过重写SimpleJpaRepository来实现类来修改Repository的功能. 例如: 将所有的删除操作修改为逻辑删除.
+在启动类中注入重写后的基础类即可.
+@EnableJparepositories(repositoryBaseClass = CustomSimpleJpaRepository.class)
 ## Jpa审计功能
