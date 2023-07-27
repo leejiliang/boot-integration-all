@@ -223,7 +223,26 @@ where (student0_.name like ? or student0_.email like ?)
 ```
 ## 自定义Repository
 ### EntityManager
+注入
 @PersistenceContext
 EntityManager
-
+或者通过构造函数注入
+1. 定义接口
+`com.uk.bootintegrationall.jpa.entity.repository.CustomStudentRepository`
+2. 实现接口
+`com.uk.bootintegrationall.jpa.entity.repository.CustomStudentRepositoryImpl`
+3. 接口继承
+`com.uk.bootintegrationall.jpa.entity.repository.StudentRepository`
+4. 测试
+```java
+    @Test
+    @Transactional
+    @Rollback(value = false)
+    void testImplRepository(){
+        var byId = studentRepository.findById(44L);
+        byId.ifPresent(i->{
+            studentRepository.deleteByEmail(i);
+        });
+    }
+```
 ## Jpa审计功能

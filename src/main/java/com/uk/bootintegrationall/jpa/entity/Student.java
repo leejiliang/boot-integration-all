@@ -30,6 +30,8 @@ public class Student {
     @OneToOne(mappedBy = "student", cascade = CascadeType.ALL)
     private Family family;
 
+    private boolean isDeleted;
+
     @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<QQAccount> qqAccount = new HashSet<>();
 

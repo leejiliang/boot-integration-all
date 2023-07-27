@@ -173,4 +173,14 @@ class StudentRepositoryTest {
         var query = entityManager.createQuery("select s from Student s where s.name like '%三%' and s.email like '%@email%'");
         query.getResultList().forEach(System.out::println);
     }
+
+    @Test
+    @Transactional
+    @Rollback(value = false)
+    void testImplRepository(){
+        var byId = studentRepository.findById(44L);
+        byId.ifPresent(i->{
+            studentRepository.deleteByEmail(i);
+        });
+    }
 }
