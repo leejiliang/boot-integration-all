@@ -1,16 +1,12 @@
 package com.uk.bootintegrationall.jpa.entity;
 
+import com.uk.bootintegrationall.jpa.entity.listener.CustomerListener;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.data.annotation.CreatedBy;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedBy;
-import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.annotation.*;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import javax.persistence.Entity;
-import javax.persistence.EntityListeners;
-import javax.persistence.GeneratedValue;
+import javax.persistence.*;
 import javax.persistence.Id;
 import java.time.LocalDateTime;
 
@@ -20,7 +16,7 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @Setter
-@EntityListeners(AuditingEntityListener.class)
+@EntityListeners({AuditingEntityListener.class, CustomerListener.class})
 public class Customer {
 
     @Id
@@ -61,5 +57,40 @@ public class Customer {
             ", email='" + email + '\'' +
             ", address='" + address + '\'' +
             '}';
+    }
+
+    @PrePersist
+    void prePersist() {
+        System.out.println("prePersist in entity");
+    }
+
+    @PostPersist
+    void postPersist() {
+        System.out.println("postPersist in entity");
+    }
+
+    @PreUpdate
+    void preUpdate() {
+        System.out.println("preUpdate in entity");
+    }
+
+    @PostUpdate
+    void postUpdate() {
+        System.out.println("postUpdate in entity");
+    }
+
+    @PreRemove
+    void preRemove() {
+        System.out.println("preRemove in entity");
+    }
+
+    @PostRemove
+    void postRemove() {
+        System.out.println("postRemove in entity");
+    }
+
+    @PostLoad
+    void postLoad() {
+        System.out.println("postLoad in entity");
     }
 }

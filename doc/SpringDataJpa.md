@@ -308,3 +308,23 @@ public class BaseEntity {
 ```
 2. 实体类继承基类即可.
 ## @Entity里面的回调方法
+支持的回调方法: 
+- @PrePersist
+- @PostPersist
+- @PreUpdate
+- @PostUpdate
+- @PreRemove
+- @PostRemove
+- @PostLoad
+这些回调方法可以放在基类中, 也可以放在实体类中, 或者放在一个自定义的类中, 通过注解@EntityListeners 引入.
+使用示例: 
+`com.uk.bootintegrationall.jpa.entity.Customer`
+`com.uk.bootintegrationall.jpa.entity.listener.CustomerListener`
+通过日志可以看出, 回调方法的执行顺序为: 自定义 > 基类 > 实体类
+需要注意的是, 如果在回调方法中发生了异常, 会导致事务回滚.
+回调方法中, 入参可以是实体类, 也可以是基类, 空, 或者Object.
+
+如果查询的时候, 不需要回调方法, 可以通过注解: @ExcludeDefaultListeners 来排除回调方法. @ExcludeSuperclassListeners 可以排除基类的回调方法.
+
+如果查询没有使用EntityManager, 可能不会触发回调方法的调用, 例如: 
+`com.uk.bootintegrationall.jpa.entity.repository.CustomerRepository.findByName` 返回值不是Entity.
