@@ -380,3 +380,93 @@ Optional<Student> findByEmail(String email);
 ## 数据源
 参开文章: https://bgmbk.blog.csdn.net/article/details/124895223
 Java定义的JDBC协议标准中有一个数据源接口: javax.sql.DataSource, 该接口定义了数据库连接池的一些基本操作, 例如: 获取连接, 关闭连接, 获取元数据等.
+常见的第三方实现有: C3P0, DBCP, Druid, HikariCP等. 目前比较常用的有: Druid, HikariCP.其中 HikariCP是SpringBoot2.0默认的数据源.
+`com.zaxxer.hikari.HikariDataSource`
+其核心逻辑就是方法: getConnection(), 该方法会从连接池中获取一个连接, 如果没有连接池, 就创建一个连接池, 如果连接池中没有连接, 则会创建一个连接, 并放入连接池中.
+- 数据源的关键配置
+`com.zaxxer.hikari.HikariConfig`
+- 如何获取连接
+- 加载原理和过程
+自动配置类: 
+```java
+@AutoConfiguration(
+  before = {SqlInitializationAutoConfiguration.class}
+  )
+  @ConditionalOnClass({DataSource.class, EmbeddedDatabaseType.class})
+  @ConditionalOnMissingBean(
+  type = {"io.r2dbc.spi.ConnectionFactory"}
+  )
+  @EnableConfigurationProperties({DataSourceProperties.class})
+  @Import({DataSourcePoolMetadataProvidersConfiguration.class})
+  public class DataSourceAutoConfiguration {
+```
+核心方法: 
+```java
+    @Configuration(
+        proxyBeanMethods = false
+    )
+    @Conditional({PooledDataSourceCondition.class})
+    @ConditionalOnMissingBean({DataSource.class, XADataSource.class})
+    @Import({DataSourceConfiguration.Hikari.class, DataSourceConfiguration.Tomcat.class, DataSourceConfiguration.Dbcp2.class, DataSourceConfiguration.OracleUcp.class, DataSourceConfiguration.Generic.class, DataSourceJmxConfiguration.class})
+    protected static class PooledDataSourceConfiguration {
+        protected PooledDataSourceConfiguration() {
+        }
+    }
+```
+这里Import了所有的springBoot支持的数据源, 具体哪个生效, 在DataSourceConfiguration中通过@Conditional注解来判断.
+以Hikari为例: 
+```java
+    @Configuration(
+        proxyBeanMethods = false
+    )
+    @ConditionalOnClass({HikariDataSource.class})// spring 默认引入
+    @ConditionalOnMissingBean({DataSource.class})// 一开始没有数据源
+    @ConditionalOnProperty(// 默认配置
+        name = {"spring.datasource.type"},
+        havingValue = "com.zaxxer.hikari.HikariDataSource",
+        matchIfMissing = true
+    )
+    static class Hikari {
+        Hikari() {
+        }
+
+        @Bean
+        @ConfigurationProperties(
+            prefix = "spring.datasource.hikari"// 所有符合该前缀的配置都会被加载到DataSourceProperties中
+        )
+        HikariDataSource dataSource(DataSourceProperties properties) {
+            HikariDataSource dataSource = (HikariDataSource)DataSourceConfiguration.createDataSource(properties, HikariDataSource.class);
+            if (StringUtils.hasText(properties.getName())) {
+                dataSource.setPoolName(properties.getName());
+            }
+
+            return dataSource;
+        }
+    }
+```
+通过condition可以看出SpringBoot对Hikari的支持是默认的, 如果没有配置spring.datasource.type, 则默认使用HikariDataSource.
+常用配置: 
+```properties
+##数据源的配置：logger=Slf4JLogger&profileSQL=true是用来debug显示sql的执行日志的
+spring.datasource.url=jdbc:mysql://localhost:3306/test?logger=Slf4JLogger&profileSQL=true
+spring.datasource.username=root
+spring.datasource.password=E6kroWaR9F
+##采用默认的
+#spring.datasource.hikari.connectionTimeout=30000
+#spring.datasource.hikari.idleTimeout=300000
+##指定一个链接池的名字，方便我们分析线程问题
+spring.datasource.hikari.pool-name=jpa-hikari-pool
+##最长生命周期15分钟够了
+spring.datasource.hikari.maxLifetime=900000
+spring.datasource.hikari.maximumPoolSize=8
+##最大和最小相对应减少创建线程池的消耗；
+spring.datasource.hikari.minimumIdle=8
+spring.datasource.hikari.connectionTestQuery=select 1 from dual
+##当释放连接到连接池之后，采用默认的自动提交事务
+spring.datasource.hikari.autoCommit=true
+##用来显示链接测trace日志
+logging.level.com.zaxxer.hikari.HikariConfig=DEBUG
+logging.level.com.zaxxer.hikari=TRACE
+logging.level.com.zaxxer.hikari.pool.HikariPool=DEBUG
+```
+## Entity和数据库字段名的映射策略
