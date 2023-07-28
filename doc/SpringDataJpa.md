@@ -478,5 +478,15 @@ logging.level.com.zaxxer.hikari.pool.HikariPool=DEBUG
 
 ## 多数据源的配置
 参考文章: https://bgmbk.blog.csdn.net/article/details/124895223
-1. 配置多个数据源的Configuration
-2. 利用: AbstractRoutingDataSource 配置多个数据源的路由策略
+- 配置多个数据源的Configuration
+1. 规划Entity和Repository的目录结构, 不同的数据源分类到不同的包中.
+2. 配置DataSource1Config.
+3. 配置DataSource2Config.
+4. 提供两个数据源的具体配置信息.
+5. 测试两个数据源的配置是否生效.
+- 利用: AbstractRoutingDataSource 配置多个数据源的路由策略
+1. 定义不同数据源的枚举类.
+2. 定义AbstractRoutingDataSource 用来存储当前线程需要的数据源
+3. 定义RoutingDataSourceConfig , 用来指定哪些Entity和Repository采用动态数据源
+4. 定义拦截器, 用来拦截需要动态切换数据源的方法, 并根据方法上的注解来切换数据源.
+5. 测试动态数据源的切换是否生效.
