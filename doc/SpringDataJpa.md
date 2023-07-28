@@ -1,4 +1,6 @@
 # SpringDataJpa使用
+参考文档: https://blog.csdn.net/fegus/article/details/124877919
+
 # 基础配置
 ```xml
         <dependency>
@@ -374,3 +376,7 @@ JPA的悲观锁机制:
 @Lock(LockModeType.PESSIMISTIC_WRITE)
 Optional<Student> findByEmail(String email);
 ```
+
+## 数据源
+参开文章: https://bgmbk.blog.csdn.net/article/details/124895223
+Java定义的JDBC协议标准中有一个数据源接口: javax.sql.DataSource, 该接口定义了数据库连接池的一些基本操作, 例如: 获取连接, 关闭连接, 获取元数据等.
