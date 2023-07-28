@@ -470,3 +470,13 @@ logging.level.com.zaxxer.hikari=TRACE
 logging.level.com.zaxxer.hikari.pool.HikariPool=DEBUG
 ```
 ## Entity和数据库字段名的映射策略
+相关规范的接口定义是: 
+`org.hibernate.boot.model.naming.ImplicitNamingStrategy`
+其默认实现类是: org.hibernate.boot.model.naming.ImplicitNamingStrategyJpaCompliantImpl
+该类中用到了模版方法, 很多具体的映射实现有各种不同的映射策略, 例如:
+`org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy`
+
+## 多数据源的配置
+参考文章: https://bgmbk.blog.csdn.net/article/details/124895223
+1. 配置多个数据源的Configuration
+2. 利用: AbstractRoutingDataSource 配置多个数据源的路由策略
