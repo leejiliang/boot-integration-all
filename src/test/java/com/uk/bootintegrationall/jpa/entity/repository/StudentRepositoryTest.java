@@ -4,15 +4,20 @@ import com.uk.bootintegrationall.jpa.entity.Family;
 import com.uk.bootintegrationall.jpa.entity.QQAccount;
 import com.uk.bootintegrationall.jpa.entity.Student;
 import com.uk.bootintegrationall.jpa.entity.Teacher;
+import com.uk.bootintegrationall.jpa.service.StudentService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import javax.persistence.OptimisticLockException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -21,6 +26,10 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.IntStream;
 
 @SpringBootTest
 @DisplayName("学生仓库测试")
@@ -28,6 +37,8 @@ class StudentRepositoryTest {
 
     @Autowired
     private StudentRepository studentRepository;
+    @Autowired
+    private StudentService studentService;
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -177,10 +188,42 @@ class StudentRepositoryTest {
     @Test
     @Transactional
     @Rollback(value = false)
-    void testImplRepository(){
+    void testImplRepository() {
         var byId = studentRepository.findById(44L);
-        byId.ifPresent(i->{
+        byId.ifPresent(i -> {
             studentRepository.deleteByEmail(i);
         });
+    }
+
+    @Test
+    @Transactional
+    @Rollback(value = false)
+    @DisplayName("乐观锁测试")
+    void testParallelUpdate() throws InterruptedException {
+        var student = studentRepository.findById(44L);
+        var threadPool = Executors.newFixedThreadPool(3);
+        student.ifPresent(i -> {
+            i.setName(i.getName() + "Q");
+            IntStream.rangeClosed(1, 3).forEach(j -> {
+                threadPool.submit(() -> {
+                    studentRepository.save(i);
+                });
+            });
+        });
+        threadPool.awaitTermination(3, TimeUnit.SECONDS);
+    }
+
+    @Test
+    @Rollback(value = false)
+    @DisplayName("重试解决乐观锁测试")
+    @Transactional
+    void testParallelUpdateWithRetry() throws InterruptedException {
+        var threadPool = Executors.newFixedThreadPool(3);
+        IntStream.rangeClosed(1, 3).forEach(j -> {
+            threadPool.submit(() -> {
+                studentService.updateStudent(44L);
+            });
+        });
+        threadPool.awaitTermination(30, TimeUnit.SECONDS);
     }
 }

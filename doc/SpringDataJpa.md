@@ -328,3 +328,49 @@ public class BaseEntity {
 
 如果查询没有使用EntityManager, 可能不会触发回调方法的调用, 例如: 
 `com.uk.bootintegrationall.jpa.entity.repository.CustomerRepository.findByName` 返回值不是Entity.
+
+## 乐观锁机制和重试机制
+在实体类中添加注解: @Version, 或者添加到BaseEntity中
+测试并发锁: 
+```java
+@Test
+@Transactional
+@Rollback(value = false)
+@DisplayName("乐观锁测试")
+void testParallelUpdate() {
+    var student = studentRepository.findById(44L);
+    var threadPool = Executors.newFixedThreadPool(3);
+    student.ifPresent(i -> {
+        i.setName(i.getName() + "Q");
+        IntStream.rangeClosed(1, 3).forEach(j -> {
+            threadPool.submit(() -> {
+                studentRepository.save(i);
+            });
+        });
+    });
+    threadPool.shutdown();
+}
+```
+触发乐观锁异常: 
+```java
+org.springframework.orm.ObjectOptimisticLockingFailureException: Batch update returned unexpected row count from update [0]; actual row count: 0; expected: 1; statement executed: update student set create_time=?, creator_id=?, modifier_id=?, modify_time=?, version=?, address=?, email=?, is_deleted=?, name=? where id=? and version=?; nested exception is org.hibernate.StaleStateException: Batch update returned unexpected row count from update [0]; actual row count: 0; expected: 1; statement executed: update student set create_time=?, creator_id=?, modifier_id=?, modify_time=?, version=?, address=?, email=?, is_deleted=?, name=? where id=? and version=?
+```
+解决方案:
+1. 重试机制
+引入Spring重试组件:
+```xml
+<dependency>
+  <groupId>org.springframework.retry</groupId>
+  <artifactId>spring-retry</artifactId>
+</dependency>
+```
+2. 开启重试
+`@EnableRetry`
+3. 在指定的方法上添加注解: @Retryable
+
+JPA的悲观锁机制:
+1. 在方法上添加注解: @Lock(LockModeType.PESSIMISTIC_WRITE)
+```java
+@Lock(LockModeType.PESSIMISTIC_WRITE)
+Optional<Student> findByEmail(String email);
+```
