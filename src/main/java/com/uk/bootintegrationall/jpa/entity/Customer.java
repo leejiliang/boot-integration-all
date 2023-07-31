@@ -3,12 +3,15 @@ package com.uk.bootintegrationall.jpa.entity;
 import com.uk.bootintegrationall.jpa.entity.listener.CustomerListener;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.BatchSize;
 import org.springframework.data.annotation.*;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import javax.persistence.Id;
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * @Description TODO
@@ -17,6 +20,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @EntityListeners({AuditingEntityListener.class, CustomerListener.class})
+//@BatchSize(size = 2)// manyToOne 和 OneToOne 无效
 public class Customer {
 
     @Id
@@ -28,6 +32,10 @@ public class Customer {
     private String email;
 
     private String address;
+
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @BatchSize(size = 10)
+    private Set<Contact> contacts = new HashSet<>();
 
     @CreatedBy
     private Long creatorId;

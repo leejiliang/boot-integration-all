@@ -490,3 +490,42 @@ logging.level.com.zaxxer.hikari.pool.HikariPool=DEBUG
 3. 定义RoutingDataSourceConfig , 用来指定哪些Entity和Repository采用动态数据源
 4. 定义拦截器, 用来拦截需要动态切换数据源的方法, 并根据方法上的注解来切换数据源.
 5. 测试动态数据源的切换是否生效.
+
+## N+1 问题的解决
+参考文章: https://www.cnblogs.com/chenpi/p/12803300.html
+- 什么是N+1问题
+例如: Customer和Contact是OneToMany的关系, 在查询Customer的时候, 会先查询Customer, 然后再查询Contact, 
+执行查询Customer的SQL是一条SQL, 比如返回数量是N, 那么查询Contact的SQL就会执行N次, 这就是N+1问题.
+
+- 为什么会出现N+1问题
+- 如何解决N+1问题
+1. 使用@BatchSize注解
+全局配置: 
+`spring.jpa.properties.hibernate.default_batch_fetch_size=20`
+这样在查询关联关系对象的时候, 就会把20个关联到的对象作为一个SQL去执行, 如果超过20个, 则会执行总数量/20次SQL.
+类级别配置
+`@BatchSize(size = 2)`
+在Entity上使用@BatchSize注解表示关联到该对象的查询, 以多少个数量作为一个sql去执行. 例如Customer实体类上的@BatchSize注解size是2, 那么在
+查询Contact的时候, 关联查询,Customer 就会以2个Customer为一组, 作为一个SQL去执行, 如果超过2个, 则会执行总数量/2次SQL.
+关联关系级别配置
+`@BatchSize(size = 2)`
+表示具体关联到的对象, 在查询的时候, 以多少个数量作为一个sql去执行. 例如Customer实体类上关联Contact的属性的@BatchSize注解size是2, 那么效果和上面是一样的.
+
+注意: @BatchSize注解对于@OneToMany和@ManyToMany的关联关系有效, 对于@OneToOne和@ManyToOne的关联关系无效.
+
+2. 使用@Fetch(FetchMode.SUBSELECT)注解
+3. 使用@Fetch(FetchMode.JOIN)注解
+4. 使用@NamedEntityGraph注解
+5. 使用@Query注解
+6. 使用@Query注解 + @EntityGraph注解
+7. 使用@Query注解 + @EntityGraph注解 + @BatchSize注解
+8. 使用@Query注解 + @EntityGraph注解 + @Fetch(FetchMode.SUBSELECT)注解
+9. 使用@Query注解 + @EntityGraph注解 + @Fetch(FetchMode.JOIN)注解
+10. 使用@Query注解 + @EntityGraph注解 + @Fetch(FetchMode.JOIN)注解 + @BatchSize注解
+11. 使用@Query注解 + @EntityGraph注解 + @Fetch(FetchMode.JOIN)注解 + @Fetch(FetchMode.SUBSELECT)注解
+12. 使用@Query注解 + @EntityGraph注解 + @Fetch(FetchMode.JOIN)注解 + @Fetch(FetchMode.SUBSELECT)注解 + @BatchSize注解
+13. 使用@Query注解 + @EntityGraph注解 + @Fetch(FetchMode.JOIN)注解 + @Fetch(FetchMode.SUBSELECT)注解 + @BatchSize注解 + @NamedEntityGraph注解
+14. 使用@Query注解 + @EntityGraph注解 + @Fetch(FetchMode.JOIN)注解 + @Fetch(FetchMode.SUBSELECT)注解 + @BatchSize注解 + @NamedEntityGraph注解 + @NamedAttributeNode注解
+15. 使用@Query注解 + @EntityGraph注解 + @Fetch(FetchMode.JOIN)注解 + @Fetch(FetchMode.SUBSELECT)注解 + @BatchSize注解 + @NamedEntityGraph注解 + @NamedAttributeNode注解 + @NamedSubgraph注解
+16. 使用@Query注解 + @EntityGraph注解 + @Fetch(FetchMode.JOIN)注解 + @Fetch(FetchMode.SUBSELECT)注解 + @BatchSize注解 + @NamedEntityGraph注解 + @NamedAttributeNode注解 + @NamedSubgraph注解 + @NamedSubgraph注解
+17. 使用@Query注解 + @EntityGraph注解 + @Fetch(FetchMode.JOIN)注解 + @Fetch(FetchMode.SUBSELECT)注解 + @BatchSize注解 + @NamedEntityGraph注解 + @NamedAttributeNode注解 + @NamedSubgraph注解 + @NamedSubgraph注解 + @NamedSubgraph注解
