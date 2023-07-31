@@ -89,4 +89,11 @@ class CustomerRepositoryTest {
         var customer = contactRepository.findAll();
     }
 
+    @Test
+    @DisplayName("测试N+1问题")
+    @Transactional
+    void testFetchModelJoinNPlusOne() {
+        var customer = customerRepository.findById(67L);
+    }
+
 }

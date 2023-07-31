@@ -20,6 +20,6 @@ public class Contact {
     private String tel;
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @BatchSize(size = 10)
+//    @BatchSize(size = 10)// 无效
     private Customer customer;
 }

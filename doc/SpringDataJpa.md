@@ -512,20 +512,14 @@ logging.level.com.zaxxer.hikari.pool.HikariPool=DEBUG
 表示具体关联到的对象, 在查询的时候, 以多少个数量作为一个sql去执行. 例如Customer实体类上关联Contact的属性的@BatchSize注解size是2, 那么效果和上面是一样的.
 
 注意: @BatchSize注解对于@OneToMany和@ManyToMany的关联关系有效, 对于@OneToOne和@ManyToOne的关联关系无效.
+2. FetchMode
+FetchMode是Hibernate提供的, 用来指定关联关系的加载策略, 例如: 
+`Fetch(Fetchmode.SELECT)` 默认配置, 新开一个sql来查询关联对象
+`@Fetch(FetchMode.SUBSELECT)`// OneToMany和ManyToMany的关联关系有效, 会在查询主对象的时候, 一次性查询所有的关联对象, 但是会有重复的数据
+`@Fetch(FetchMode.JOIN)`// 对列表查询没有用, 只对单个对象查询有用, FetchType失效, 会在查询主对象的时候, 一次性查询所有的关联对象, 但是不会有重复的数据
 
-2. 使用@Fetch(FetchMode.SUBSELECT)注解
-3. 使用@Fetch(FetchMode.JOIN)注解
-4. 使用@NamedEntityGraph注解
-5. 使用@Query注解
-6. 使用@Query注解 + @EntityGraph注解
-7. 使用@Query注解 + @EntityGraph注解 + @BatchSize注解
-8. 使用@Query注解 + @EntityGraph注解 + @Fetch(FetchMode.SUBSELECT)注解
-9. 使用@Query注解 + @EntityGraph注解 + @Fetch(FetchMode.JOIN)注解
-10. 使用@Query注解 + @EntityGraph注解 + @Fetch(FetchMode.JOIN)注解 + @BatchSize注解
-11. 使用@Query注解 + @EntityGraph注解 + @Fetch(FetchMode.JOIN)注解 + @Fetch(FetchMode.SUBSELECT)注解
-12. 使用@Query注解 + @EntityGraph注解 + @Fetch(FetchMode.JOIN)注解 + @Fetch(FetchMode.SUBSELECT)注解 + @BatchSize注解
-13. 使用@Query注解 + @EntityGraph注解 + @Fetch(FetchMode.JOIN)注解 + @Fetch(FetchMode.SUBSELECT)注解 + @BatchSize注解 + @NamedEntityGraph注解
-14. 使用@Query注解 + @EntityGraph注解 + @Fetch(FetchMode.JOIN)注解 + @Fetch(FetchMode.SUBSELECT)注解 + @BatchSize注解 + @NamedEntityGraph注解 + @NamedAttributeNode注解
-15. 使用@Query注解 + @EntityGraph注解 + @Fetch(FetchMode.JOIN)注解 + @Fetch(FetchMode.SUBSELECT)注解 + @BatchSize注解 + @NamedEntityGraph注解 + @NamedAttributeNode注解 + @NamedSubgraph注解
-16. 使用@Query注解 + @EntityGraph注解 + @Fetch(FetchMode.JOIN)注解 + @Fetch(FetchMode.SUBSELECT)注解 + @BatchSize注解 + @NamedEntityGraph注解 + @NamedAttributeNode注解 + @NamedSubgraph注解 + @NamedSubgraph注解
-17. 使用@Query注解 + @EntityGraph注解 + @Fetch(FetchMode.JOIN)注解 + @Fetch(FetchMode.SUBSELECT)注解 + @BatchSize注解 + @NamedEntityGraph注解 + @NamedAttributeNode注解 + @NamedSubgraph注解 + @NamedSubgraph注解 + @NamedSubgraph注解
+
+4. 使用NamedEntityGraph注解
+笨重, 一堆注解, 但是可以指定关联关系的加载策略, 例如: 
+`@NamedEntityGraph(name = "Customer.contacts", attributeNodes = @NamedAttributeNode("contacts"))`
+一般不要用. 实体类非常臃肿

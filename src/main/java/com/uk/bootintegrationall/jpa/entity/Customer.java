@@ -4,6 +4,8 @@ import com.uk.bootintegrationall.jpa.entity.listener.CustomerListener;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.BatchSize;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.springframework.data.annotation.*;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -20,7 +22,7 @@ import java.util.Set;
 @Getter
 @Setter
 @EntityListeners({AuditingEntityListener.class, CustomerListener.class})
-//@BatchSize(size = 2)// manyToOne 和 OneToOne 无效
+@BatchSize(size = 2)// 对于关联到该实体的所有关联实体都有效.
 public class Customer {
 
     @Id
@@ -34,7 +36,8 @@ public class Customer {
     private String address;
 
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-    @BatchSize(size = 10)
+//    @BatchSize(size = 10)
+    @Fetch(FetchMode.SELECT)// 通过id或者联合唯一键查询时, 才会生效
     private Set<Contact> contacts = new HashSet<>();
 
     @CreatedBy
