@@ -529,5 +529,20 @@ FetchMode是Hibernate提供的, 用来指定关联关系的加载策略, 例如:
 @Query 查询对Spel表达式的支持
 还支持直接从SpringSecurity中获取当前登录用户的信息.
 
-
+## JPA的缓存机制
+### 一级缓存
+一级缓存是EntityManager的缓存, 一级缓存的生命周期和EntityManager的生命周期一致, 一级缓存的作用域是EntityManager
+Session级别, Flush的时候会清空一级缓存, 一级缓存的作用是: 用来提高性能, 避免重复查询数据库, 一级缓存的实现是: HashMap. GC管理.
+同时也不支持开关, 大小分配等操作.
+### Query Plan Cache
+缓存的是查询语句, 例如: 查询时可以直接使用转换结果.不需要重复解析查询语句, 例如:
+`@Query("select c from Customer c where c.id = ?1")`
+应用级别的缓存. 
+极限场景下可能会导致内存泄露, 可以通过配置控制缓存量
+`spring.jpa.properties.hibernate.query.plan_cache_max_size=2048`
+native sql cache. 
+`spring.jpa.properties.hibernate.query.plan_parameter_metadata_max_size=128`
+In查询的不同参数个数的缓存.
+### 二级缓存
+二级缓存是EntityManagerFactory的缓存, 二级缓存的生命周期和EntityManagerFactory的生命周期一致, 二级缓存的作用域是EntityManagerFactory,
 
