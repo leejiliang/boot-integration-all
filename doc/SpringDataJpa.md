@@ -523,3 +523,11 @@ FetchMode是Hibernate提供的, 用来指定关联关系的加载策略, 例如:
 笨重, 一堆注解, 但是可以指定关联关系的加载策略, 例如: 
 `@NamedEntityGraph(name = "Customer.contacts", attributeNodes = @NamedAttributeNode("contacts"))`
 一般不要用. 实体类非常臃肿
+
+## SpEL表达式的使用
+基础语法
+@Query 查询对Spel表达式的支持
+还支持直接从SpringSecurity中获取当前登录用户的信息.
+
+
+
