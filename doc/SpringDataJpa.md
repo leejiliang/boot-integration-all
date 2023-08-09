@@ -545,4 +545,5 @@ native sql cache.
 In查询的不同参数个数的缓存.
 ### 二级缓存
 二级缓存是EntityManagerFactory的缓存, 二级缓存的生命周期和EntityManagerFactory的生命周期一致, 二级缓存的作用域是EntityManagerFactory,
+SpringCache内容. Redis章节学习.
 
